@@ -10,16 +10,6 @@ frontend/dist
 *.exe
 *.out
 
-# Wails build artifacts
-/build/
-/wails-build/
-
-# Node.js dependencies
-/node_modules/
-/dist/
-/.yarn/
-/.pnp.*
-
 # Logs
 npm-debug.log*
 yarn-debug.log*
@@ -34,6 +24,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-
-# Wails settings
-/wails.json
