@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"strconv"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
 // App struct
@@ -21,7 +24,20 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+func (a *App) GetCpuDetails() string {
+	cpuDetails, err := cpu.Info()
+	if err != nil {
+		panic(err)
+	}
+
+	// Convert the CPU details to a string representation
+	cpuDetailsStr := ""
+	for _, cpuInfo := range cpuDetails {
+		cpuDetailsStr += "Model: " + cpuInfo.ModelName + "\n"
+		cpuDetailsStr += "Cores: " + strconv.Itoa(int(cpuInfo.Cores)) + "\n"
+		cpuDetailsStr += "Speed: " + fmt.Sprintf("%.2f", cpuInfo.Mhz) + " MHz\n"
+		cpuDetailsStr += "Cache Size: " + strconv.Itoa(int(cpuInfo.CacheSize)) + " KB\n"
+	}
+
+	return cpuDetailsStr
 }
