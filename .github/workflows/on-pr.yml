@@ -1,0 +1,30 @@
+name: "On Pull Request"
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+    request-review:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Request review from codeowners
+              uses: actions/github-script@v6
+              with:
+                script: |
+                  const { data: pullRequest } = await github.pulls.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: context.payload.pull_request.number,
+                  });
+                  if (pullRequest.requested_reviewers.length === 0) {
+                    await github.pulls.requestReviewers({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      pull_number: context.payload.pull_request.number,
+                      reviewers: ['codeowner1', 'codeowner2'],
+                    });
+                  } else {
+                    console.log('Reviewers already requested.');
+                  }
+                  console.log('Reviewers requested successfully.');
