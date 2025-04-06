@@ -3,9 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"os/exec"
 	"strconv"
+	"syscall"
 
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/mem"
 )
 
 // App struct
@@ -40,4 +43,41 @@ func (a *App) GetCpuDetails() string {
 	}
 
 	return cpuDetailsStr
+}
+
+func (a *App) GetCpuUsage() string {
+	cpuPercentages, err := cpu.Percent(0, false)
+	if err != nil {
+		panic(err)
+	}
+
+	cpuUsageStr := "CPU Usage: "
+	for _, cpuPercent := range cpuPercentages {
+		cpuUsageStr += fmt.Sprintf("%.2f%% ", cpuPercent)
+	}
+
+	return cpuUsageStr
+}
+
+func (a *App) GetRamDetails() string {
+	ramDetails, err := mem.VirtualMemory()
+	if err != nil {
+		panic(err)
+	}
+
+	ramDetailsStr := ""
+	ramDetailsStr += "Total: " + strconv.Itoa(int(ramDetails.Total/1024/1024)) + " MB\n"
+	ramDetailsStr += "Available: " + strconv.Itoa(int(ramDetails.Available/1024/1024)) + " MB\n"
+	ramDetailsStr += "Used: " + strconv.Itoa(int(ramDetails.Used/1024/1024)) + " MB\n"
+	ramDetailsStr += "Free: " + strconv.Itoa(int(ramDetails.Free/1024/1024)) + " MB\n"
+
+	return ramDetailsStr
+}
+
+func (a *App) GetGpuDetails() string {
+	Info := exec.Command("cmd", "/C", "wmic path win32_VideoController get name")
+	Info.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	History, _ := Info.Output()
+
+	return string(History)
 }

@@ -5,3 +5,15 @@
 export function GetCpuDetails() {
   return window['go']['main']['App']['GetCpuDetails']();
 }
+
+export function GetCpuUsage() {
+  return window['go']['main']['App']['GetCpuUsage']();
+}
+
+export function GetGpuDetails() {
+  return window['go']['main']['App']['GetGpuDetails']();
+}
+
+export function GetRamDetails() {
+  return window['go']['main']['App']['GetRamDetails']();
+}
