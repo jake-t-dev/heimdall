@@ -77,7 +77,10 @@ func (a *App) GetRamDetails() string {
 func (a *App) GetGpuDetails() string {
 	Info := exec.Command("cmd", "/C", "wmic path win32_VideoController get name")
 	Info.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	History, _ := Info.Output()
+	History, err := Info.Output()
+	if err != nil {
+		panic(err)
+	}
 
 	return string(History)
 }
